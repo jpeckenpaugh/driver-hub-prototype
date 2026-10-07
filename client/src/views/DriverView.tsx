@@ -200,7 +200,7 @@ export const DriverView: React.FC<DriverViewProps> = ({
 
     socket.emit(SOCKET_EVENTS.RIDE_ACCEPT, payload);
 
-    // Configurar ruta en el simulador y arrancar viaje hacia el pickup
+    // Configurar ruta en el simulador pero NO auto-iniciar para permitir demo pausada/staged
     setCurrentRoute(fullRouteToPickup);
     setActiveRide({
       ...rideToAccept,
@@ -209,12 +209,8 @@ export const DriverView: React.FC<DriverViewProps> = ({
       routeToPickup: fullRouteToPickup,
       status: 'accepted'
     });
-
-    // Iniciar simulación automática
-    setTimeout(() => {
-      playSimulator();
-    }, 300);
   };
+
 
   // Acción: Rechazar oferta
   const handleDeclineRide = () => {
@@ -439,11 +435,11 @@ export const DriverView: React.FC<DriverViewProps> = ({
 
       {/* 3. ESTADO: ACCEPTED (En camino al pickup) */}
       {rideStatus === 'accepted' && activeRide && (
-        <div className="relative z-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3.5 flex flex-col gap-2.5 shadow-2xl">
+        <div className="relative z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3.5 flex flex-col gap-2.5 shadow-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
-              <span className="text-xs font-bold text-slate-200">En camino al Pasajero</span>
+              <span className="text-xs font-bold text-slate-200">Paso 1: En camino al Pasajero</span>
             </div>
             <span className="text-xs font-mono font-bold text-emerald-400">
               ${activeRide.fare}
@@ -460,25 +456,29 @@ export const DriverView: React.FC<DriverViewProps> = ({
             </div>
           </div>
 
-          {/* Botón de Llegada */}
+          <div className="text-[11px] text-slate-400 italic">
+            El viaje ha sido aceptado. Conduce o simula la ruta, y pulsa el botón para confirmar tu llegada:
+          </div>
+
+          {/* Botón de Llegada explícito */}
           <button
             type="button"
             onClick={handleArriveAtPickup}
-            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/30 flex items-center justify-center gap-1.5 transition-all"
+            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <UserCheck size={14} />
-            <span>Notificar: He llegado al Pickup</span>
+            <UserCheck size={16} />
+            <span>Confirmar: Notificar que he llegado</span>
           </button>
         </div>
       )}
 
       {/* 4. ESTADO: ARRIVED_AT_PICKUP (Esperando que el pasajero suba) */}
       {rideStatus === 'arrived_at_pickup' && activeRide && (
-        <div className="relative z-20 bg-slate-900/95 backdrop-blur-md border-t-2 border-amber-500 p-3.5 flex flex-col gap-2.5 shadow-2xl">
+        <div className="relative z-30 bg-slate-900/95 backdrop-blur-md border-t-2 border-amber-500 p-3.5 flex flex-col gap-2.5 shadow-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-              <span className="text-xs font-bold text-amber-300">Esperando al Pasajero</span>
+              <span className="text-xs font-bold text-amber-300">Paso 2: Pasajero Notificado</span>
             </div>
             <span className="text-xs font-mono font-bold text-emerald-400">
               ${activeRide.fare}
@@ -486,23 +486,24 @@ export const DriverView: React.FC<DriverViewProps> = ({
           </div>
 
           <p className="text-xs text-slate-300">
-            {activeRide.rider.name} ha sido notificado. Cuando suba al vehículo, presiona iniciar.
+            <strong>{activeRide.rider.name}</strong> sabe que estás afuera. Cuando suba al vehículo, presiona confirmar:
           </p>
 
           <button
             type="button"
             onClick={handleStartTrip}
-            className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all"
+            className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/40 flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <Navigation size={16} />
-            <span>Iniciar Viaje al Destino</span>
+            <Navigation size={18} />
+            <span>Confirmar: Iniciar Viaje al Destino</span>
           </button>
         </div>
       )}
 
       {/* 5. ESTADO: IN_PROGRESS (En viaje a dropoff) */}
       {rideStatus === 'in_progress' && activeRide && (
-        <div className="relative z-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3.5 flex flex-col gap-2.5 shadow-2xl">
+        <div className="relative z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-3.5 flex flex-col gap-2.5 shadow-2xl">
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />

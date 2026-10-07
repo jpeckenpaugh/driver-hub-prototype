@@ -213,10 +213,11 @@ export const LeafletMapView: React.FC<LeafletMapViewProps> = ({
           <Marker
             position={[activeVehicle.location.lat, activeVehicle.location.lng]}
             icon={createVehicleIcon(activeVehicle.heading, activeVehicle.isBusy)}
-            zIndexOffset={1000}
+            zIndexOffset={100}
             interactive={false}
           />
         )}
+
       </MapContainer>
     </div>
   );
