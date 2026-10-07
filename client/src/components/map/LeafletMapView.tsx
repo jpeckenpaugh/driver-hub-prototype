@@ -8,7 +8,7 @@ import {
   useMapEvents
 } from 'react-leaflet';
 import L from 'leaflet';
-import { Coordinates, RouteGeometry, Driver } from '@driver-hub/shared';
+import { Coordinates, RouteGeometry, Driver, ORLANDO_CENTER, ORLANDO_OFFLINE_ROADS } from '@driver-hub/shared';
 import {
   createVehicleIcon,
   createPickupIcon,
@@ -47,7 +47,6 @@ function MapUpdater({
   const map = useMap();
 
   useEffect(() => {
-    // Invalidate size para evitar bugs de tiles no cargadas en contenedores dinámicos
     const timer = setTimeout(() => {
       map.invalidateSize();
     }, 200);
@@ -79,7 +78,7 @@ function MapClickHandler({ onClick }: { onClick?: (coords: Coordinates) => void 
 }
 
 export const LeafletMapView: React.FC<LeafletMapViewProps> = ({
-  center = { lat: 40.4168, lng: -3.7038 }, // Madrid Puerta del Sol
+  center = ORLANDO_CENTER, // Orlando Tourist Corridor
   zoom = 13,
   pickup,
   dropoff,
@@ -125,44 +124,58 @@ export const LeafletMapView: React.FC<LeafletMapViewProps> = ({
   }, [routeToDropoff]);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className} bg-slate-950`}>
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={zoom}
         zoomControl={false}
         attributionControl={false}
-        className="w-full h-full"
+        className="w-full h-full bg-slate-950"
       >
-        {/* CartoDB Dark Matter / Positron tiles para estética moderna */}
+        {/* OpenStreetMap 100% público y libre (sin API key requerida) */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
+
+        {/* Capa vectorial de carreteras offline de Orlando (asegura red visual y carreteras incluso offline) */}
+        {ORLANDO_OFFLINE_ROADS.map((road, idx) => (
+          <Polyline
+            key={`road-${idx}`}
+            positions={road.coordinates.map(c => [c.lat, c.lng])}
+            pathOptions={{
+              color: road.type === 'highway' ? '#38bdf8' : '#64748b',
+              weight: road.type === 'highway' ? 3.5 : 2,
+              opacity: 0.35,
+              dashArray: road.type === 'highway' ? undefined : '4, 4'
+            }}
+          />
+        ))}
 
         <MapUpdater center={center} zoom={zoom} bounds={bounds} />
         <MapClickHandler onClick={onMapClick} />
 
-        {/* Polilínea de ruta hacia el pasajero (Ruta de recogida: Azul punteada o delgada) */}
+        {/* Polilínea de ruta hacia el pasajero (Ruta de recogida: Azul neón punteada) */}
         {polylineRouteToPickup.length > 0 && (
           <Polyline
             positions={polylineRouteToPickup}
             pathOptions={{
-              color: '#3b82f6',
+              color: '#38bdf8',
               weight: 5,
-              opacity: 0.85,
+              opacity: 0.9,
               dashArray: '8, 8'
             }}
           />
         )}
 
-        {/* Polilínea de viaje principal (Ruta a destino: Verde esmeralda sólido vibrante) */}
+        {/* Polilínea de viaje principal (Ruta a destino: Verde esmeralda vibrante) */}
         {polylineRouteToDropoff.length > 0 && (
           <Polyline
             positions={polylineRouteToDropoff}
             pathOptions={{
               color: '#10b981',
               weight: 6,
-              opacity: 0.9
+              opacity: 0.95
             }}
           />
         )}
