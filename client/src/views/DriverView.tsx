@@ -200,7 +200,7 @@ export const DriverView: React.FC<DriverViewProps> = ({
 
     socket.emit(SOCKET_EVENTS.RIDE_ACCEPT, payload);
 
-    // Configurar ruta en el simulador pero NO auto-iniciar para permitir demo pausada/staged
+    // Cargar ruta hacia el punto de recogida (pickup) y arrancar la conducción hacia el pasajero
     setCurrentRoute(fullRouteToPickup);
     setActiveRide({
       ...rideToAccept,
@@ -209,7 +209,14 @@ export const DriverView: React.FC<DriverViewProps> = ({
       routeToPickup: fullRouteToPickup,
       status: 'accepted'
     });
+
+    // Iniciar el viaje del coche hacia el pasajero (conduce visiblemente por el mapa)
+    resetSimulator();
+    setTimeout(() => {
+      playSimulator();
+    }, 400);
   };
+
 
 
   // Acción: Rechazar oferta
@@ -456,21 +463,39 @@ export const DriverView: React.FC<DriverViewProps> = ({
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-400 italic">
-            El viaje ha sido aceptado. Conduce o simula la ruta, y pulsa el botón para confirmar tu llegada:
+          <div className="text-[11px] text-slate-400">
+            {progress < 0.95 ? (
+              <span className="flex items-center gap-1.5 text-blue-300">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                El coche está conduciendo hacia el pasajero... ({Math.round(progress * 100)}% de camino)
+              </span>
+            ) : (
+              <span className="text-emerald-400 font-semibold">
+                ¡Has llegado al punto de recogida! Notifica al pasajero:
+              </span>
+            )}
           </div>
 
           {/* Botón de Llegada explícito */}
           <button
             type="button"
             onClick={handleArriveAtPickup}
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all active:scale-95"
+            className={`w-full py-3 rounded-xl text-white font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 ${
+              progress >= 0.9
+                ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/40 animate-pulse'
+                : 'bg-slate-800 hover:bg-blue-700 text-slate-200 border border-slate-700'
+            }`}
           >
-            <UserCheck size={16} />
-            <span>Confirmar: Notificar que he llegado</span>
+            <UserCheck size={16} className={progress >= 0.9 ? 'text-white' : 'text-blue-400'} />
+            <span>
+              {progress >= 0.9
+                ? 'Confirmar: Notificar que he llegado'
+                : 'Marcar llegada al Pickup (Llegar ya)'}
+            </span>
           </button>
         </div>
       )}
+
 
       {/* 4. ESTADO: ARRIVED_AT_PICKUP (Esperando que el pasajero suba) */}
       {rideStatus === 'arrived_at_pickup' && activeRide && (

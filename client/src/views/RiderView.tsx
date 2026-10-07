@@ -42,10 +42,16 @@ export const RiderView: React.FC<RiderViewProps> = ({
   const [activeRide, setActiveRide] = useState<Ride | null>(null);
   const [availableDrivers, setAvailableDrivers] = useState<Driver[]>([]);
 
-  // Puntos seleccionados
-  const [pickup] = useState<LocationPoint>(MADRID_PRESETS[0]); // Sol
-  const [dropoff, setDropoff] = useState<LocationPoint>(MADRID_PRESETS[3]); // Bernabéu
+  // Puntos seleccionados: Pickup inicial fijado en Universal Studios o Sol, y destino elegido al azar en cada recarga
+  const [pickup] = useState<LocationPoint>(MADRID_PRESETS[0]);
+  const [dropoff, setDropoff] = useState<LocationPoint>(() => {
+    // Escoger un destino aleatorio entre los presets disponibles (excluyendo el pickup)
+    const availableDestinations = MADRID_PRESETS.slice(1);
+    const randomIndex = Math.floor(Math.random() * availableDestinations.length);
+    return availableDestinations[randomIndex] || MADRID_PRESETS[3];
+  });
   const [selectedTier, setSelectedTier] = useState<string>('standard');
+
 
   // Calificación al completar
   const [ratingGiven, setRatingGiven] = useState<number>(5);
