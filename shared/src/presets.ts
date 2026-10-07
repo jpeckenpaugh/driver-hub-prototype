@@ -154,7 +154,7 @@ export const INITIAL_MOCK_DRIVERS: Driver[] = [
   {
     id: 'driver-1',
     name: 'Marcus Vance',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80', // Foto de hombre para Marcus Vance
     vehicle: {
       model: 'Cadillac Escalade',
       plate: 'ORL-4921',
@@ -189,10 +189,11 @@ export const INITIAL_MOCK_DRIVERS: Driver[] = [
 
 export const DEFAULT_MOCK_RIDER: Rider = {
   id: 'rider-1',
-  name: 'David Miller',
-  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  name: 'Elena Ramos',
+  avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80', // Foto de mujer para Elena Ramos
   rating: 4.95,
 };
+
 
 export const DEFAULT_RIDER = DEFAULT_MOCK_RIDER;
 export const DEFAULT_DRIVER = INITIAL_MOCK_DRIVERS[0];
