@@ -422,26 +422,27 @@ export const RiderView: React.FC<RiderViewProps> = ({
             </span>
           </div>
 
-          <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-2.5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Navigation size={16} className="text-emerald-400" />
-              <div>
+          <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-2.5 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <Navigation size={16} className="text-emerald-400 shrink-0" />
+              <div className="min-w-0 flex-1">
                 <p className="text-[10px] uppercase font-bold text-slate-400">Rumbo a</p>
-                <p className="text-xs font-semibold text-slate-100 truncate max-w-[200px]">
+                <p className="text-xs font-semibold text-slate-100 truncate">
                   {activeRide.dropoff.name || activeRide.dropoff.address}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] text-slate-400 font-medium">Seguridad</p>
-              <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold">
-                <Shield size={12} />
+            <div className="shrink-0 flex flex-col items-end">
+              <span className="text-[10px] text-slate-400 font-medium">Seguridad</span>
+              <div className="inline-flex items-center gap-1 text-emerald-400 text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+                <Shield size={11} className="shrink-0" />
                 <span>Monitoreado</span>
               </div>
             </div>
           </div>
         </div>
       )}
+
 
       {/* 5. ESTADO: COMPLETED (Recibo y calificación) */}
       {rideStatus === 'completed' && activeRide && (

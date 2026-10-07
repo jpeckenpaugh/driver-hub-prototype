@@ -549,16 +549,40 @@ export const DriverView: React.FC<DriverViewProps> = ({
             </div>
           </div>
 
+          <div className="text-[11px] text-slate-400">
+            {progress < 0.95 ? (
+              <span className="flex items-center gap-1.5 text-emerald-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                Conduciendo hacia el destino... ({Math.round(progress * 100)}% completado)
+              </span>
+            ) : (
+              <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                <CheckCircle2 size={13} />
+                ¡Has llegado al destino final! Procede a cobrar:
+              </span>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={handleCompleteTrip}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-1.5 transition-all"
+            disabled={progress < 0.95}
+            className={`w-full py-3 rounded-xl font-extrabold text-xs shadow-lg flex items-center justify-center gap-1.5 transition-all ${
+              progress >= 0.95
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-600/40 animate-pulse cursor-pointer active:scale-95'
+                : 'bg-slate-800 text-slate-500 border border-slate-700/60 cursor-not-allowed opacity-60'
+            }`}
           >
-            <CheckCircle2 size={15} />
-            <span>Finalizar y Cobrar Viaje</span>
+            <CheckCircle2 size={15} className={progress >= 0.95 ? 'text-white' : 'text-slate-500'} />
+            <span>
+              {progress >= 0.95
+                ? 'Finalizar y Cobrar Viaje'
+                : `En camino (${Math.round(progress * 100)}%) - Esperando llegada`}
+            </span>
           </button>
         </div>
       )}
+
 
       {/* 6. ESTADO: COMPLETED (Resumen conductor) */}
       {rideStatus === 'completed' && activeRide && (
