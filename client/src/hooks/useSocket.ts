@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { VirtualSocket } from '../services/virtualHub';
 
 interface UseSocketOptions {
   role: 'rider' | 'driver' | 'admin';
@@ -14,18 +15,40 @@ export function useSocket({
   serverUrl = DEFAULT_SERVER_URL,
   autoConnect = true
 }: UseSocketOptions) {
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<Socket | VirtualSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!autoConnect) return;
 
-    // Conexión independiente forzada con multiplex: false
+    // Detectar si estamos en GitHub Pages o producción estática sin servidor de Node
+    const isGitHubPages =
+      typeof window !== 'undefined' &&
+      (window.location.hostname.includes('github.io') || window.location.search.includes('standalone=true'));
+
+    if (isGitHubPages) {
+      console.log(`[Socket ${role}] Modo GitHub Pages / In-Browser Server activado`);
+      const vSocket = new VirtualSocket(role);
+      socketRef.current = vSocket;
+
+      vSocket.on('connect', () => {
+        setIsConnected(true);
+        setLastError(null);
+      });
+
+      return () => {
+        vSocket.disconnect();
+        socketRef.current = null;
+      };
+    }
+
+    // Modo Socket.io real (desarrollo local con servidor Node.js)
     const socket = io(serverUrl, {
       multiplex: false,
       transports: ['websocket', 'polling'],
-      query: { role }
+      query: { role },
+      timeout: 3000
     });
 
     socketRef.current = socket;
@@ -42,9 +65,13 @@ export function useSocket({
     });
 
     socket.on('connect_error', (err) => {
-      console.warn(`[Socket ${role}] Error de conexión:`, err.message);
-      setLastError(err.message);
-      setIsConnected(false);
+      console.warn(`[Socket ${role}] Error de conexión TCP (${err.message}), conmutando a In-Browser Server...`);
+      // Fallback transparente al virtual hub para que la demo nunca quede rota
+      socket.disconnect();
+      const vSocket = new VirtualSocket(role);
+      socketRef.current = vSocket;
+      setIsConnected(true);
+      setLastError(null);
     });
 
     return () => {
@@ -52,6 +79,7 @@ export function useSocket({
       socketRef.current = null;
     };
   }, [role, serverUrl, autoConnect]);
+
 
   const emit = useCallback((event: string, data?: unknown) => {
     if (socketRef.current) {

@@ -27,11 +27,14 @@ import { useRouting } from '../hooks/useRouting';
 import { formatDuration, playNotificationChime } from '../utils/geo';
 import { Socket } from 'socket.io-client';
 
+import { VirtualSocket } from '../services/virtualHub';
+
 interface RiderViewProps {
-  socket: Socket | null;
+  socket: Socket | VirtualSocket | any | null;
   isConnected: boolean;
   onResetDemo?: () => void;
 }
+
 
 export const RiderView: React.FC<RiderViewProps> = ({
   socket,

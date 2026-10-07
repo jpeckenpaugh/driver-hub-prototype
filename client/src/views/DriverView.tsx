@@ -27,12 +27,14 @@ import { useSimulator } from '../hooks/useSimulator';
 import { useRouting } from '../hooks/useRouting';
 import { playNotificationChime } from '../utils/geo';
 import { Socket } from 'socket.io-client';
+import { VirtualSocket } from '../services/virtualHub';
 
 interface DriverViewProps {
-  socket: Socket | null;
+  socket: Socket | VirtualSocket | any | null;
   isConnected: boolean;
   onResetDemo?: () => void;
 }
+
 
 export const DriverView: React.FC<DriverViewProps> = ({
   socket,
