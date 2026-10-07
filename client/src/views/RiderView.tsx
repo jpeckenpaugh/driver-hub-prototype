@@ -314,7 +314,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
 
           <div className="text-center">
             <h3 className="font-bold text-sm text-slate-100">Buscando conductores cercanos...</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Notificando a conductores en Madrid</p>
+            <p className="text-xs text-slate-400 mt-0.5">Notificando a conductores en Orlando, FL</p>
           </div>
 
           <div className="w-full flex items-center justify-between text-xs px-3 py-2 bg-slate-800/60 rounded-xl border border-slate-700/50">

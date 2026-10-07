@@ -87,7 +87,7 @@ export const SplitView: React.FC<SplitViewProps> = ({ onResetDemo }) => {
         <SmartphoneFrame
           key={`driver-${demoKey}`}
           title="Conductor"
-          subtitle="Carlos Gómez"
+          subtitle="Marcus Vance"
           roleBadge={{
             label: 'Driver App',
             color: 'bg-emerald-400'

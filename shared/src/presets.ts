@@ -206,7 +206,7 @@ export interface VehicleTierOption {
 }
 
 export const VEHICLE_TIERS: VehicleTierOption[] = [
-  { id: 'standard', name: 'Orlando UberX', multiplier: 1.0, icon: 'Car', etaMinutes: 3 },
-  { id: 'comfort', name: 'Comfort SUV', multiplier: 1.4, icon: 'Sparkles', etaMinutes: 4 },
-  { id: 'black', name: 'Executive Black', multiplier: 2.1, icon: 'Shield', etaMinutes: 6 }
+  { id: 'standard', name: 'Orbit Standard', multiplier: 1.0, icon: 'Car', etaMinutes: 3 },
+  { id: 'comfort', name: 'Orbit Comfort', multiplier: 1.4, icon: 'Sparkles', etaMinutes: 4 },
+  { id: 'black', name: 'Orbit Black VIP', multiplier: 2.1, icon: 'Shield', etaMinutes: 6 }
 ];

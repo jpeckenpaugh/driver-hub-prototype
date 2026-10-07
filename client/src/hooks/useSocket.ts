@@ -7,7 +7,7 @@ interface UseSocketOptions {
   autoConnect?: boolean;
 }
 
-const DEFAULT_SERVER_URL = 'http://localhost:3000';
+const DEFAULT_SERVER_URL = 'http://localhost:3001';
 
 export function useSocket({
   role,

@@ -373,7 +373,7 @@ export const DriverView: React.FC<DriverViewProps> = ({
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
               <span className="text-slate-300 font-medium">Esperando solicitudes...</span>
             </div>
-            <span className="text-[10px] font-mono text-slate-400">Madrid Central</span>
+            <span className="text-[10px] font-mono text-slate-400">Orlando I-Drive Corridor</span>
           </div>
         </div>
       )}
