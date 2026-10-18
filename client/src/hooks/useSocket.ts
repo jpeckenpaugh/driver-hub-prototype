@@ -25,7 +25,7 @@ export function useSocket({
     // Detectar si estamos en GitHub Pages o producción estática sin servidor de Node
     const isGitHubPages =
       typeof window !== 'undefined' &&
-      (window.location.hostname.includes('github.io') || window.location.search.includes('standalone=true'));
+      (window.location.hostname.includes('github.io') || window.location.search.includes('standalone=true') || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost');
 
     if (isGitHubPages) {
       console.log(`[Socket ${role}] Modo GitHub Pages / In-Browser Server activado`);
