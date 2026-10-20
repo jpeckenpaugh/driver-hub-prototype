@@ -28,6 +28,7 @@ import { useRouting } from '../hooks/useRouting';
 import { playNotificationChime } from '../utils/geo';
 import { Socket } from 'socket.io-client';
 import { VirtualSocket } from '../services/virtualHub';
+import { SupportAgentWidget } from '../components/support/SupportAgentWidget';
 
 interface DriverViewProps {
   socket: Socket | VirtualSocket | any | null;
@@ -613,6 +614,10 @@ export const DriverView: React.FC<DriverViewProps> = ({
           </button>
         </div>
       )}
+      <SupportAgentWidget
+        audience="driver"
+        buttonClassName="absolute top-2 right-12 z-[1000]"
+      />
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+import path from 'node:path';
 import express from 'express';
 import http from 'node:http';
 import { Server, Socket } from 'socket.io';
@@ -6,12 +8,17 @@ import { SOCKET_EVENTS } from '@driver-hub/shared';
 import { store } from './store.js';
 import { registerDriverHandlers } from './handlers/driverHandler.js';
 import { registerRideHandlers } from './handlers/rideHandler.js';
+import { supportRouter } from './routes/supportRoutes.js';
+
+// `npm run dev:server` runs with cwd=server; also support a root-level .env.
+dotenv.config({ path: path.resolve(process.cwd(), '.env'), quiet: true });
+dotenv.config({ path: path.resolve(process.cwd(), '..', '.env'), quiet: true });
 
 const PORT = Number(process.env.PORT) || 3001;
 
 const app = express();
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use(express.json({ limit: '64kb' }));
 
 const server = http.createServer(app);
 
@@ -44,6 +51,8 @@ app.get('/api/drivers', (_req, res) => {
 app.get('/api/rides', (_req, res) => {
   res.json({ rides: store.getAllRides() });
 });
+
+app.use('/api/support', supportRouter);
 
 app.post('/api/reset', (_req, res) => {
   store.seedInitialData();

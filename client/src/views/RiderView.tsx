@@ -28,6 +28,7 @@ import { formatDuration, playNotificationChime } from '../utils/geo';
 import { Socket } from 'socket.io-client';
 
 import { VirtualSocket } from '../services/virtualHub';
+import { SupportAgentWidget } from '../components/support/SupportAgentWidget';
 
 interface RiderViewProps {
   socket: Socket | VirtualSocket | any | null;
@@ -495,6 +496,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
           </button>
         </div>
       )}
+      <SupportAgentWidget audience="rider" />
     </div>
   );
 };
